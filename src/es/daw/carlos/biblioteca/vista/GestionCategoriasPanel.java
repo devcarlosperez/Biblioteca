@@ -1,5 +1,6 @@
 package es.daw.carlos.biblioteca.vista;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -59,6 +60,13 @@ public class GestionCategoriasPanel extends JFrame {
         
         setContentPane(panelCategorias);
         setVisible(false);
+        
+        botonVolverBibliotecaApp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
     }
     
     public JPanel devolverPanelCategorias() {

@@ -1,9 +1,10 @@
 package es.daw.carlos.biblioteca.vista;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class GestionAutoresPanel extends JFrame {
+public class GestionAutoresPanel extends JFrame{
     
     private JPanel panelAutores = new JPanel();
     
@@ -59,6 +60,13 @@ public class GestionAutoresPanel extends JFrame {
         
         setContentPane(panelAutores);
         setVisible(false);
+        
+        botonVolverBibliotecaApp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
     }
     
     public JPanel devolverPanelAutores() {

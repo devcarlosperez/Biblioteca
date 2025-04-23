@@ -5,8 +5,11 @@ import javax.swing.*;
 
 public class BibliotecaApp extends JFrame {
     
+    private JPanel panelBibliotecaApp = new JPanel();
+    
     private GestionAutoresPanel gestionAutoresPanel;
     private GestionCategoriasPanel gestionCategoriasPanel;
+    private GestionLibrosPanel gestionLibrosPanel;
     
     public BibliotecaApp() {
         initComponents();
@@ -15,6 +18,7 @@ public class BibliotecaApp extends JFrame {
     public void initComponents() {
         gestionAutoresPanel = new GestionAutoresPanel();
         gestionCategoriasPanel = new GestionCategoriasPanel();
+        gestionLibrosPanel = new GestionLibrosPanel();
         
         setSize(500, 500);
         setTitle("Biblioteca");
@@ -38,7 +42,6 @@ public class BibliotecaApp extends JFrame {
         panelBotonesBibliotecaApp.add(botonPanelCategorias);
         panelBotonesBibliotecaApp.add(botonPanelLibros);
         
-        JPanel panelBibliotecaApp = new JPanel();
         panelBibliotecaApp.setLayout(new BoxLayout(panelBibliotecaApp, BoxLayout.Y_AXIS));
         panelBibliotecaApp.add(panelTituloBienvenida);
         panelBibliotecaApp.add(Box.createVerticalStrut(20));
@@ -62,5 +65,17 @@ public class BibliotecaApp extends JFrame {
                 setContentPane(gestionCategoriasPanel.devolverPanelCategorias());
             }
         });
+        
+        botonPanelLibros.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panelBibliotecaApp.setVisible(false);
+                setContentPane(gestionLibrosPanel.devolverPanelLibros());
+            }
+        });
+    }
+    
+    public JPanel devolverPanelBibliotecaApp() {
+        return panelBibliotecaApp;
     }
 }
