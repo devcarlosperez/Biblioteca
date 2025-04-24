@@ -4,19 +4,17 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class GestionAutoresPanel extends JFrame{
+public class GestionAutoresPanel extends Panel {
     
     private JPanel panelAutores = new JPanel();
+    private BibliotecaApp bibliotecaApp;
     
-    public GestionAutoresPanel() {
+    public GestionAutoresPanel(BibliotecaApp bibliotecaApp) {
+        this.bibliotecaApp = bibliotecaApp;
         initComponents();
     }
     
     public void initComponents() {
-        setSize(500, 500);
-        setTitle("Autores");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
         JLabel tituloBienvenidaAutores = new JLabel("Autores");
         tituloBienvenidaAutores.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -58,13 +56,10 @@ public class GestionAutoresPanel extends JFrame{
         panelAutores.add(Box.createVerticalStrut(20));
         panelAutores.add(panelTablaAutores);
         
-        setContentPane(panelAutores);
-        setVisible(false);
-        
         botonVolverBibliotecaApp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                bibliotecaApp.volverInicioBibliotecaApp();
             }
         });
     }

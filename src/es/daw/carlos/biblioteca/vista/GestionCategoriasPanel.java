@@ -4,19 +4,17 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class GestionCategoriasPanel extends JFrame {
+public class GestionCategoriasPanel extends JPanel {
     
     private JPanel panelCategorias = new JPanel();
+    private BibliotecaApp bibliotecaApp;
     
-    public GestionCategoriasPanel() {
+    public GestionCategoriasPanel(BibliotecaApp bibliotecaApp) {
+        this.bibliotecaApp = bibliotecaApp;
         initComponents();
     }
     
     public void initComponents() {
-        setSize(500, 500);
-        setTitle("Categorias");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
         JLabel tituloBienvenidaCategorias = new JLabel("Categorias");
         tituloBienvenidaCategorias.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -58,13 +56,10 @@ public class GestionCategoriasPanel extends JFrame {
         panelCategorias.add(Box.createVerticalStrut(20));
         panelCategorias.add(panelTablaCategorias);
         
-        setContentPane(panelCategorias);
-        setVisible(false);
-        
         botonVolverBibliotecaApp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                bibliotecaApp.volverInicioBibliotecaApp();
             }
         });
     }

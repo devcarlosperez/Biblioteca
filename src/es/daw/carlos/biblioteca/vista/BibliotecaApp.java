@@ -5,7 +5,7 @@ import javax.swing.*;
 
 public class BibliotecaApp extends JFrame {
     
-    private JPanel panelBibliotecaApp = new JPanel();
+    private static JPanel panelBibliotecaApp = new JPanel();
     
     private GestionAutoresPanel gestionAutoresPanel;
     private GestionCategoriasPanel gestionCategoriasPanel;
@@ -16,9 +16,9 @@ public class BibliotecaApp extends JFrame {
     }
     
     public void initComponents() {
-        gestionAutoresPanel = new GestionAutoresPanel();
-        gestionCategoriasPanel = new GestionCategoriasPanel();
-        gestionLibrosPanel = new GestionLibrosPanel();
+        gestionAutoresPanel = new GestionAutoresPanel(this);
+        gestionCategoriasPanel = new GestionCategoriasPanel(this);
+        gestionLibrosPanel = new GestionLibrosPanel(this);
         
         setSize(500, 500);
         setTitle("Biblioteca");
@@ -75,7 +75,12 @@ public class BibliotecaApp extends JFrame {
         });
     }
     
-    public JPanel devolverPanelBibliotecaApp() {
+    public static JPanel devolverPanelBibliotecaApp() {
         return panelBibliotecaApp;
+    }
+    
+    public void volverInicioBibliotecaApp() {
+        panelBibliotecaApp.setVisible(true);
+        setContentPane(panelBibliotecaApp);
     }
 }

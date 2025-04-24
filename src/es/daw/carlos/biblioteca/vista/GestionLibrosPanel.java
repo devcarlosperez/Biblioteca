@@ -4,19 +4,17 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class GestionLibrosPanel extends JFrame {
+public class GestionLibrosPanel extends JPanel {
     
     private JPanel panelLibros = new JPanel();
+    private BibliotecaApp bibliotecaApp;
     
-    public GestionLibrosPanel() {
+    public GestionLibrosPanel(BibliotecaApp bibliotecaApp) {
+        this.bibliotecaApp = bibliotecaApp;
         initComponents();
     }
     
-    public void initComponents() {
-        setSize(500, 500);
-        setTitle("Libros");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+    public void initComponents() {       
         JLabel tituloBienvenidaLibros = new JLabel("Libros");
         tituloBienvenidaLibros.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -27,7 +25,7 @@ public class GestionLibrosPanel extends JFrame {
         JTextField textoBuscarLibro = new JTextField(10);
         JButton botonVolverBibliotecaApp = new JButton("Volver");
         
-        String[] columnasTablaLibros = {"Isbn", "Título", "Año publicación", "Autor_id", "Categoria_id"};
+        String[] columnasTablaLibros = {"Isbn", "Título", "Año publicación", "Autor_id", "Categoría_id"};
         DefaultTableModel modeloTablaLibros = new DefaultTableModel(columnasTablaLibros, 0);
         JTable tablaLibros = new JTable(modeloTablaLibros);
         
@@ -58,13 +56,10 @@ public class GestionLibrosPanel extends JFrame {
         panelLibros.add(Box.createVerticalStrut(20));
         panelLibros.add(panelTablaLibros);
         
-        setContentPane(panelLibros);
-        setVisible(false);
-        
         botonVolverBibliotecaApp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                bibliotecaApp.volverInicioBibliotecaApp();
             }
         });
     }
