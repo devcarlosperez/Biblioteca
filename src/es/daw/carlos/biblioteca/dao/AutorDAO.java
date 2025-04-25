@@ -9,7 +9,7 @@ public class AutorDAO {
     
     public static void insertarAutor(Autor autor) {
         Connection conn = ConexionBD.conectar();
-        String insertarAutor = "INSER INTO AUTOR (NOMBRE, NACIONALIDAD)"
+        String insertarAutor = "INSERT INTO Autor (nombre, nacionalidad)"
                 + "VALUES (?, ?)";
         PreparedStatement stmt = null;
         try {
@@ -27,13 +27,13 @@ public class AutorDAO {
         }
     }
     
-    public static void borrarAutor(Autor autor) {
+    public static void borrarAutor(int id) {
         Connection conn = ConexionBD.conectar();
-        String borrarAutor = "DELETE FROM Autor WHERE ID = ?";
+        String borrarAutor = "DELETE FROM Autor WHERE id = ?";
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(borrarAutor);
-            stmt.setInt(1, autor.getId());
+            stmt.setInt(1, id);
             int resultado = stmt.executeUpdate();
             if (resultado == 1) {
                 System.out.println("Se ha borrado el registro correctamente");
@@ -46,7 +46,22 @@ public class AutorDAO {
     }
     
     public static void actualizarAutor(Autor autor) {
-        
+        Connection conn = ConexionBD.conectar();
+        String actualizarAutor = "UPDATE Autor SET nombre = ?, nacionalidad = ?";
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(actualizarAutor);
+            stmt.setString(1, autor.getNombre());
+            stmt.setString(2, autor.getNacionalidad());
+            int resultado = stmt.executeUpdate();
+            if (resultado == 1) {
+                System.out.println("Se ha actualizado el registro correctamente");
+            } else {
+                System.out.println("Error al actualizar el registro");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al preparar la query");
+        }
     }
     
     public static ArrayList<Autor> listarAutores() {
@@ -57,10 +72,17 @@ public class AutorDAO {
         try {
             stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(leerAutores);
+            boolean hayRegistros = false;
             while (rs.next()) {
                 listaAutores.add(new Autor(rs.getInt("id"),
                 rs.getString("nombre"),
                 rs.getString("nacionalidad")));
+                hayRegistros = true;
+            }
+            if (hayRegistros) {
+                System.out.println("Se han leído correctamente los registros");
+            } else {
+                System.out.println("No se han encontrado registros en la base de datos");
             }
         } catch (SQLException e) {
             System.out.println("Error al preparar la query");
