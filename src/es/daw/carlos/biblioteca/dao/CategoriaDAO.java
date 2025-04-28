@@ -44,7 +44,7 @@ public class CategoriaDAO {
         }
     }
     
-    public static void actualizarAutor(Categoria categoria) {
+    public static void actualizarCategoria(Categoria categoria) {
         Connection conn = ConexionBD.conectar();
         String actualizarCategoria = "UPDATE Categoria SET nombre = ?"
                 + "WHERE id = ?";

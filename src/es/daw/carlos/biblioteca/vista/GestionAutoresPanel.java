@@ -103,7 +103,7 @@ public class GestionAutoresPanel extends JPanel {
                 formularioAñadirAutores.add(textoNacionalidadAutor);
                 formularioAñadirAutores.add(campoObligatorioNacionalidadAutor);
 
-                JPanel panelBotonesAñadirAutor = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                JPanel panelBotonesAñadirAutor = new JPanel(new FlowLayout(FlowLayout.CENTER));
                 panelBotonesAñadirAutor.add(aceptarAñadirAutor);
                 panelBotonesAñadirAutor.add(cancelarAñadirAutor);
 
@@ -202,7 +202,7 @@ public class GestionAutoresPanel extends JPanel {
                 formularioEditarAutores.add(textoNacionalidadAutor);
                 formularioEditarAutores.add(campoObligatorioNacionalidadAutor);
 
-                JPanel panelBotonesEditarAutor = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                JPanel panelBotonesEditarAutor = new JPanel(new FlowLayout(FlowLayout.CENTER));
                 panelBotonesEditarAutor.add(aceptarEditarAutor);
                 panelBotonesEditarAutor.add(cancelarEditarAutor);
 
@@ -230,7 +230,7 @@ public class GestionAutoresPanel extends JPanel {
                         if (camposVacios == false) {
                             String nombreAutorNuevo = textoNombreAutor.getText().trim();
                             String nacionalidadAutorNueva = textoNacionalidadAutor.getText().trim();
-                            Autor autorActualizado = new Autor(idAutor, nombreAutorNuevo, nacionalidadAutorNueva);  // IMPORTANTE pasar ID
+                            Autor autorActualizado = new Autor(idAutor, nombreAutorNuevo, nacionalidadAutorNueva);
                             AutorDAO.actualizarAutor(autorActualizado);
                             ArrayList<Autor> listaAutores = AutorDAO.listarAutores();
                             cargarAutoresTabla(modeloTablaAutores, listaAutores);
@@ -311,6 +311,11 @@ public class GestionAutoresPanel extends JPanel {
         botonBuscarAutor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (textoBuscarAutor.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Por favor introduzca un valor "
+                            + "en la búsqueda");
+                    return;
+                }
                 try {
                     int idBuscarAutor = Integer.parseInt(textoBuscarAutor.getText());
                     Autor autorBuscado = AutorDAO.buscarAutor(idBuscarAutor);
@@ -321,7 +326,7 @@ public class GestionAutoresPanel extends JPanel {
                         cargarAutoresTabla(modeloTablaAutores, listaAutoresBuscados);
                         botonVolverAtras.setVisible(true);
                     } else {
-                        JOptionPane.showMessageDialog(null, "No se han encontrado autor que"
+                        JOptionPane.showMessageDialog(null, "No se ha encontrado autor que "
                                 + "coincida con el parámetro de búsqueda");
                     }
                 } catch (NumberFormatException ex) {
@@ -335,6 +340,7 @@ public class GestionAutoresPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Autor> listaAutores = AutorDAO.listarAutores();
                 cargarAutoresTabla(modeloTablaAutores, listaAutores);
+                textoBuscarAutor.setText("");
                 botonVolverAtras.setVisible(false);
             }
         });
