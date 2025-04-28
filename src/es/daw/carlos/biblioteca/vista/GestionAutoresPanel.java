@@ -12,17 +12,22 @@ import javax.swing.table.DefaultTableModel;
 public class GestionAutoresPanel extends JPanel {
 
     private JPanel panelAutores = new JPanel();
+    private static ArrayList<Autor> listaAutores;
+    
+    public static ArrayList<Autor> getListaAutores() {
+        return listaAutores;
+    }
 
     public GestionAutoresPanel() {
         initComponents();
     }
 
     public void initComponents() {
-        String[] columnasTablaAutores = {"ID", "Nombre", "Nacionalidad"};
+        String[] columnasTablaAutores = {"ID", "NOMBRE", "NACIONALIDAD"};
         DefaultTableModel modeloTablaAutores = new DefaultTableModel(columnasTablaAutores, 0);
         JTable tablaAutores = new JTable(modeloTablaAutores);
 
-        ArrayList<Autor> listaAutores = AutorDAO.listarAutores();
+        listaAutores = AutorDAO.listarAutores();
         cargarAutoresTabla(modeloTablaAutores, listaAutores);
 
         JLabel tituloBienvenidaAutores = new JLabel("Autores");
@@ -133,7 +138,7 @@ public class GestionAutoresPanel extends JPanel {
                             String nacionalidadAutor = textoNacionalidadAutor.getText().trim();
                             Autor autor = new Autor(nombreAutor, nacionalidadAutor);
                             AutorDAO.insertarAutor(autor);
-                            ArrayList<Autor> listaAutores = AutorDAO.listarAutores();
+                            listaAutores = AutorDAO.listarAutores();
                             cargarAutoresTabla(modeloTablaAutores, listaAutores);
                             confirmacionAñadirAutores.dispose();
                         }
@@ -232,7 +237,7 @@ public class GestionAutoresPanel extends JPanel {
                             String nacionalidadAutorNueva = textoNacionalidadAutor.getText().trim();
                             Autor autorActualizado = new Autor(idAutor, nombreAutorNuevo, nacionalidadAutorNueva);
                             AutorDAO.actualizarAutor(autorActualizado);
-                            ArrayList<Autor> listaAutores = AutorDAO.listarAutores();
+                            listaAutores = AutorDAO.listarAutores();
                             cargarAutoresTabla(modeloTablaAutores, listaAutores);
                             confirmacionEditarAutores.dispose();
                         }
@@ -290,7 +295,7 @@ public class GestionAutoresPanel extends JPanel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         AutorDAO.borrarAutor(idAutor);
-                        ArrayList<Autor> listaAutores = AutorDAO.listarAutores();
+                        listaAutores = AutorDAO.listarAutores();
                         cargarAutoresTabla(modeloTablaAutores, listaAutores);
                         confirmacionBorrarAutores.dispose();
                     }
@@ -338,7 +343,7 @@ public class GestionAutoresPanel extends JPanel {
         botonVolverAtras.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ArrayList<Autor> listaAutores = AutorDAO.listarAutores();
+                listaAutores = AutorDAO.listarAutores();
                 cargarAutoresTabla(modeloTablaAutores, listaAutores);
                 textoBuscarAutor.setText("");
                 botonVolverAtras.setVisible(false);

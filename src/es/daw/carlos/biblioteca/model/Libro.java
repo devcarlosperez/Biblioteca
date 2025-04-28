@@ -8,6 +8,6 @@ public class Libro {
     private String isbn;
     private String titulo;
     private int anioPublicacion;
-    private int autorId;
-    private int categoriaId; 
+    private int autor_id;
+    private int categoria_id; 
 }

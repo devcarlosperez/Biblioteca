@@ -18,8 +18,8 @@ public class LibroDAO {
             stmt.setString(1, libro.getIsbn());
             stmt.setString(2, libro.getTitulo());
             stmt.setInt(3, libro.getAnioPublicacion());
-            stmt.setInt(4, libro.getAutorId());
-            stmt.setInt(5, libro.getCategoriaId());
+            stmt.setInt(4, libro.getAutor_id());
+            stmt.setInt(5, libro.getCategoria_id());
             int resultado = stmt.executeUpdate();
             if (resultado == 1) {
                 System.out.println("Se ha insertado el registro correctamente");
@@ -31,7 +31,7 @@ public class LibroDAO {
         }
     }
     
-    public static void borrarCategoria(String isbn) {
+    public static void borrarLibro(String isbn) {
         Connection conn = ConexionBD.conectar();
         String borrarAutor = "DELETE FROM Libro WHERE isbn = ?";
         PreparedStatement stmt = null;
@@ -49,7 +49,7 @@ public class LibroDAO {
         }
     }
     
-    public static void actualizarLibro(Libro libro) {
+    public static void actualizarLibro(Libro libro, String isbnActual) {
         Connection conn = ConexionBD.conectar();
         String actualizarCategoria = "UPDATE Libro SET isbn = ?, titulo = ?,"
                 + "anio_publicacion = ?, autor_id = ?, categoria_id = ?"
@@ -60,9 +60,9 @@ public class LibroDAO {
             stmt.setString(1, libro.getIsbn());
             stmt.setString(2, libro.getTitulo());
             stmt.setInt(3, libro.getAnioPublicacion());
-            stmt.setInt(4, libro.getAutorId());
-            stmt.setInt(5, libro.getCategoriaId());
-            stmt.setString(5, libro.getIsbn());
+            stmt.setInt(4, libro.getAutor_id());
+            stmt.setInt(5, libro.getCategoria_id());
+            stmt.setString(6, isbnActual);
             int resultado = stmt.executeUpdate();
             if (resultado == 1) {
                 System.out.println("Se ha actualizado el registro correctamente");
@@ -97,5 +97,24 @@ public class LibroDAO {
             System.out.println("Error al preparar la query");
         }
         return listaLibros;
+    }
+    
+    public static Libro buscarLibro(String isbn) {
+        Connection conn = ConexionBD.conectar();
+        String buscarLibro = "SELECT * FROM Libro WHERE isbn = ?";
+        Libro libro = null;
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(buscarLibro);
+            stmt.setString(1, isbn);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                libro = new Libro(rs.getString("isbn"), rs.getString("titulo"), 
+                rs.getInt("anio_publicacion"), rs.getInt("autor_id"), rs.getInt("categoria_id"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al preparar la query");
+        }
+        return libro;
     }
 }

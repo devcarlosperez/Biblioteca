@@ -12,17 +12,22 @@ import javax.swing.table.DefaultTableModel;
 public class GestionCategoriasPanel extends JPanel {
     
     private JPanel panelCategorias = new JPanel();
+    private static ArrayList<Categoria> listaCategorias;
+    
+    public static ArrayList<Categoria> getListaCategorias() {
+        return listaCategorias;
+    }
     
     public GestionCategoriasPanel() {
         initComponents();
     }
     
     public void initComponents() {
-        String[] columnasTablaCategorias = {"ID", "Nombre"};
+        String[] columnasTablaCategorias = {"ID", "NOMBRE"};
         DefaultTableModel modeloTablaCategorias = new DefaultTableModel(columnasTablaCategorias, 0);
         JTable tablaCategorias = new JTable(modeloTablaCategorias);
         
-        ArrayList<Categoria> listaCategorias = CategoriaDAO.listarCategorias();
+        listaCategorias = CategoriaDAO.listarCategorias();
         cargarCategoriasTabla(modeloTablaCategorias, listaCategorias);
         
         JLabel tituloBienvenidaCategorias = new JLabel("Categorias");
@@ -106,7 +111,7 @@ public class GestionCategoriasPanel extends JPanel {
                             String nombreCategoria = textoNombreCategoria.getText().trim();
                             Categoria categoria = new Categoria(nombreCategoria);
                             CategoriaDAO.insertarCategoria(categoria);
-                            ArrayList<Categoria> listaCategorias = CategoriaDAO.listarCategorias();
+                            listaCategorias = CategoriaDAO.listarCategorias();
                             cargarCategoriasTabla(modeloTablaCategorias, listaCategorias);
                             confirmacionAñadirCategorias.dispose();
                         }
@@ -177,7 +182,7 @@ public class GestionCategoriasPanel extends JPanel {
                             String nombreCategoriaNueva = textoNombreCategoria.getText().trim();
                             Categoria categoriaActualizada = new Categoria(idCategoria, nombreCategoriaNueva);
                             CategoriaDAO.actualizarCategoria(categoriaActualizada);
-                            ArrayList<Categoria> listaCategorias = CategoriaDAO.listarCategorias();
+                            listaCategorias = CategoriaDAO.listarCategorias();
                             cargarCategoriasTabla(modeloTablaCategorias, listaCategorias);
                             confirmacionEditarCategorias.dispose();
                         }
@@ -235,7 +240,7 @@ public class GestionCategoriasPanel extends JPanel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         CategoriaDAO.borrarCategoria(idCategoria);
-                        ArrayList<Categoria> listaCategorias = CategoriaDAO.listarCategorias();
+                        listaCategorias = CategoriaDAO.listarCategorias();
                         cargarCategoriasTabla(modeloTablaCategorias, listaCategorias);
                         confirmacionBorrarCategorias.dispose();
                     }
@@ -283,7 +288,7 @@ public class GestionCategoriasPanel extends JPanel {
         botonVolverAtras.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ArrayList<Categoria> listaCategorias = CategoriaDAO.listarCategorias();
+                listaCategorias = CategoriaDAO.listarCategorias();
                 cargarCategoriasTabla(modeloTablaCategorias, listaCategorias);
                 textoBuscarCategoria.setText("");
                 botonVolverAtras.setVisible(false);
