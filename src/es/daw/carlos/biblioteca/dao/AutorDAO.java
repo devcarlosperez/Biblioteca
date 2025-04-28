@@ -47,12 +47,14 @@ public class AutorDAO {
     
     public static void actualizarAutor(Autor autor) {
         Connection conn = ConexionBD.conectar();
-        String actualizarAutor = "UPDATE Autor SET nombre = ?, nacionalidad = ?";
+        String actualizarAutor = "UPDATE Autor SET nombre = ?, nacionalidad = ?"
+                + "WHERE id = ?";
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(actualizarAutor);
             stmt.setString(1, autor.getNombre());
             stmt.setString(2, autor.getNacionalidad());
+            stmt.setInt(3, autor.getId());
             int resultado = stmt.executeUpdate();
             if (resultado == 1) {
                 System.out.println("Se ha actualizado el registro correctamente");
@@ -88,5 +90,24 @@ public class AutorDAO {
             System.out.println("Error al preparar la query");
         }
         return listaAutores;
+    }
+    
+    public static Autor buscarAutor(int id) {
+        Connection conn = ConexionBD.conectar();
+        String buscarAutor = "SELECT * FROM Autor WHERE id = ?";
+        Autor autor = null;
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(buscarAutor);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                autor = new Autor(rs.getInt("id"),
+                rs.getString("nombre"), rs.getString("nacionalidad"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al preparar la query");
+        }
+        return autor;
     }
 }

@@ -46,11 +46,13 @@ public class CategoriaDAO {
     
     public static void actualizarAutor(Categoria categoria) {
         Connection conn = ConexionBD.conectar();
-        String actualizarCategoria = "UPDATE Categoria SET nombre = ?";
+        String actualizarCategoria = "UPDATE Categoria SET nombre = ?"
+                + "WHERE id = ?";
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(actualizarCategoria);
             stmt.setString(1, categoria.getNombre());
+            stmt.setInt(2, categoria.getId());
             int resultado = stmt.executeUpdate();
             if (resultado == 1) {
                 System.out.println("Se ha actualizado el registro correctamente");
@@ -85,5 +87,24 @@ public class CategoriaDAO {
             System.out.println("Error al preparar la query");
         }
         return listaCategorias;
+    }
+    
+    public static Categoria buscarCategoria(int id) {
+        Connection conn = ConexionBD.conectar();
+        String buscarCategoria = "SELECT * FROM Categoria WHERE id = ?";
+        Categoria categoria = null;
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(buscarCategoria);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                categoria = new Categoria(rs.getInt("id"),
+                rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al preparar la query");
+        }
+        return categoria;
     }
 }

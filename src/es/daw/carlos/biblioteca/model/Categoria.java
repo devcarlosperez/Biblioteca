@@ -7,4 +7,9 @@ import lombok.Data;
 public class Categoria {
     private int id;
     private String nombre;
+    
+    // Constructor manual SIN id
+    public Categoria(String nombre) {
+        this.nombre = nombre;
+    }
 }

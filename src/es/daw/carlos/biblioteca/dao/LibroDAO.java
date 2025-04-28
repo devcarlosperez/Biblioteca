@@ -52,7 +52,8 @@ public class LibroDAO {
     public static void actualizarLibro(Libro libro) {
         Connection conn = ConexionBD.conectar();
         String actualizarCategoria = "UPDATE Libro SET isbn = ?, titulo = ?,"
-                + "anio_publicacion = ?, autor_id = ?, categoria_id = ?";
+                + "anio_publicacion = ?, autor_id = ?, categoria_id = ?"
+                + "WHERE isbn = ?";
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(actualizarCategoria);
@@ -61,6 +62,7 @@ public class LibroDAO {
             stmt.setInt(3, libro.getAnioPublicacion());
             stmt.setInt(4, libro.getAutorId());
             stmt.setInt(5, libro.getCategoriaId());
+            stmt.setString(5, libro.getIsbn());
             int resultado = stmt.executeUpdate();
             if (resultado == 1) {
                 System.out.println("Se ha actualizado el registro correctamente");
