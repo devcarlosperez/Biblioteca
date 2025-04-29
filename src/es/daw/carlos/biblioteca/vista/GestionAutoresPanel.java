@@ -2,6 +2,7 @@ package es.daw.carlos.biblioteca.vista;
 
 import es.daw.carlos.biblioteca.dao.AutorDAO;
 import es.daw.carlos.biblioteca.model.Autor;
+import es.daw.carlos.biblioteca.model.Libro;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -13,7 +14,8 @@ public class GestionAutoresPanel extends JPanel {
 
     private JPanel panelAutores = new JPanel();
     private static ArrayList<Autor> listaAutores;
-    
+
+    // Método para utilizar la listaAutores fuera de la clase
     public static ArrayList<Autor> getListaAutores() {
         return listaAutores;
     }
@@ -27,9 +29,11 @@ public class GestionAutoresPanel extends JPanel {
         DefaultTableModel modeloTablaAutores = new DefaultTableModel(columnasTablaAutores, 0);
         JTable tablaAutores = new JTable(modeloTablaAutores);
 
+        // LLamamos al método para cargar los registros al iniciar el programa
         listaAutores = AutorDAO.listarAutores();
         cargarAutoresTabla(modeloTablaAutores, listaAutores);
 
+        // Componentes de la interfaz
         JLabel tituloBienvenidaAutores = new JLabel("Autores");
         tituloBienvenidaAutores.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -56,6 +60,7 @@ public class GestionAutoresPanel extends JPanel {
         panelBotonesAutores.add(textoBuscarAutor);
 
         JScrollPane panelTablaAutores = new JScrollPane(tablaAutores);
+        panelTablaAutores.setPreferredSize(new Dimension(480, 300));
 
         panelAutores.setLayout(new BoxLayout(panelAutores, BoxLayout.Y_AXIS));
         panelAutores.add(panelTituloBienvenidaAutores);
@@ -75,10 +80,13 @@ public class GestionAutoresPanel extends JPanel {
                 confirmacionAñadirAutores.setSize(300, 300);
                 confirmacionAñadirAutores.setLayout(new BorderLayout());
 
+                // Componentes ventana JDialog
                 JLabel labelNombreAutor = new JLabel("Nombre:");
                 JTextField textoNombreAutor = new JTextField(20);
+                textoNombreAutor.setAlignmentX(Component.LEFT_ALIGNMENT);
                 JLabel labelNacionalidadAutor = new JLabel("Nacionalidad:");
                 JTextField textoNacionalidadAutor = new JTextField(20);
+                textoNacionalidadAutor.setAlignmentX(Component.LEFT_ALIGNMENT);
                 JButton aceptarAñadirAutor = new JButton("Aceptar");
                 JButton cancelarAñadirAutor = new JButton("Cancelar");
 
@@ -118,6 +126,7 @@ public class GestionAutoresPanel extends JPanel {
                 aceptarAñadirAutor.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        // Comprobación campos vacios
                         boolean camposVacios = false;
                         if (textoNombreAutor.getText().trim().isEmpty()) {
                             campoObligatorioNombreAutor.setVisible(true);
@@ -136,6 +145,7 @@ public class GestionAutoresPanel extends JPanel {
                         if (camposVacios == false) {
                             String nombreAutor = textoNombreAutor.getText().trim();
                             String nacionalidadAutor = textoNacionalidadAutor.getText().trim();
+                            // Usamos constructor personalizado (sin id)
                             Autor autor = new Autor(nombreAutor, nacionalidadAutor);
                             AutorDAO.insertarAutor(autor);
                             listaAutores = AutorDAO.listarAutores();
@@ -174,10 +184,13 @@ public class GestionAutoresPanel extends JPanel {
                 confirmacionEditarAutores.setSize(300, 300);
                 confirmacionEditarAutores.setLayout(new BorderLayout());
 
+                // Componentes ventana JDialog
                 JLabel labelNombreAutor = new JLabel("Nombre:");
                 JTextField textoNombreAutor = new JTextField(nombreAutorActual, 20);
+                textoNombreAutor.setAlignmentX(Component.LEFT_ALIGNMENT);
                 JLabel labelNacionalidadAutor = new JLabel("Nacionalidad:");
                 JTextField textoNacionalidadAutor = new JTextField(nacionalidadAutorActual, 20);
+                textoNacionalidadAutor.setAlignmentX(Component.LEFT_ALIGNMENT);
                 JButton aceptarEditarAutor = new JButton("Aceptar");
                 JButton cancelarEditarAutor = new JButton("Cancelar");
 
@@ -217,6 +230,7 @@ public class GestionAutoresPanel extends JPanel {
                 aceptarEditarAutor.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        // Comprobación campos vacios
                         boolean camposVacios = false;
                         if (textoNombreAutor.getText().trim().isEmpty()) {
                             campoObligatorioNombreAutor.setVisible(true);
@@ -235,6 +249,7 @@ public class GestionAutoresPanel extends JPanel {
                         if (camposVacios == false) {
                             String nombreAutorNuevo = textoNombreAutor.getText().trim();
                             String nacionalidadAutorNueva = textoNacionalidadAutor.getText().trim();
+                            // Usamos el constructor con id
                             Autor autorActualizado = new Autor(idAutor, nombreAutorNuevo, nacionalidadAutorNueva);
                             AutorDAO.actualizarAutor(autorActualizado);
                             listaAutores = AutorDAO.listarAutores();
@@ -272,6 +287,7 @@ public class GestionAutoresPanel extends JPanel {
                 confirmacionBorrarAutores.setSize(320, 180);
                 confirmacionBorrarAutores.setLayout(new BorderLayout());
 
+                // Componentes ventana JDialog
                 JLabel mensajeConfirmacionAutorBorrado = new JLabel("¿Estas seguro/a que quieres eliminar este autor?");
                 mensajeConfirmacionAutorBorrado.setAlignmentX(CENTER_ALIGNMENT);
                 JButton aceptarConfirmacionAutorBorrado = new JButton("Aceptar");
@@ -294,10 +310,22 @@ public class GestionAutoresPanel extends JPanel {
                 aceptarConfirmacionAutorBorrado.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        AutorDAO.borrarAutor(idAutor);
-                        listaAutores = AutorDAO.listarAutores();
-                        cargarAutoresTabla(modeloTablaAutores, listaAutores);
-                        confirmacionBorrarAutores.dispose();
+                        // Comprobación el autor tiene asociado un libro
+                        boolean autorExisteEnLibro = false;
+                        for (Libro i : GestionLibrosPanel.getListaLibros()) {
+                            if ((idAutor == i.getAutor_id())) {
+                                autorExisteEnLibro = true;
+                            }
+                        }
+                        if (autorExisteEnLibro) {
+                            JOptionPane.showMessageDialog(null, "El autor que quieres borrar "
+                                        + "es un autor de un libro existente");
+                        } else {
+                            AutorDAO.borrarAutor(idAutor); // Pasamos el id del autor a borrar
+                            listaAutores = AutorDAO.listarAutores();
+                            cargarAutoresTabla(modeloTablaAutores, listaAutores);
+                            confirmacionBorrarAutores.dispose();
+                        }
                     }
                 });
 
@@ -316,15 +344,18 @@ public class GestionAutoresPanel extends JPanel {
         botonBuscarAutor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Comprobación búsqueda vacia
                 if (textoBuscarAutor.getText().trim().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Por favor introduzca un valor "
                             + "en la búsqueda");
                     return;
                 }
                 try {
+                    // Comprobación búsqueda con un número entero
                     int idBuscarAutor = Integer.parseInt(textoBuscarAutor.getText());
                     Autor autorBuscado = AutorDAO.buscarAutor(idBuscarAutor);
 
+                    // Comprobación de resultados
                     if (autorBuscado != null) {
                         ArrayList<Autor> listaAutoresBuscados = new ArrayList<>();
                         listaAutoresBuscados.add(autorBuscado);
@@ -339,18 +370,20 @@ public class GestionAutoresPanel extends JPanel {
                 }
             }
         });
-        
+
         botonVolverAtras.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 listaAutores = AutorDAO.listarAutores();
+                // Se actualizan los registros
                 cargarAutoresTabla(modeloTablaAutores, listaAutores);
-                textoBuscarAutor.setText("");
+                textoBuscarAutor.setText(""); // Se limpia el parámetro de búsqueda
                 botonVolverAtras.setVisible(false);
             }
         });
     }
 
+    // Método para actualizar la tabla en cada operación
     public void cargarAutoresTabla(DefaultTableModel modeloTabla, ArrayList<Autor> listaAutores) {
         modeloTabla.setRowCount(0);
         for (Autor i : listaAutores) {

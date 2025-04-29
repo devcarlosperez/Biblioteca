@@ -14,20 +14,27 @@ import javax.swing.table.DefaultTableModel;
 public class GestionLibrosPanel extends JPanel {
 
     private JPanel panelLibros = new JPanel();
-    private ArrayList<Libro> listaLibros;
+    private static ArrayList<Libro> listaLibros;
+    
+    // Método para utilizar la listaLibros fuera de la clase
+    public static ArrayList<Libro> getListaLibros() {
+        return listaLibros;
+    }
 
     public GestionLibrosPanel() {
         initComponents();
     }
 
     public void initComponents() {
-        String[] columnasTablaLibros = {"ISBN", "TÍTULO", "AÑO PUBLICACIÓN", "AUTOR_NOMBRE", "CATEGORÍA_NOMBRE"};
+        String[] columnasTablaLibros = {"ISBN", "TÍTULO", "AÑO_PUBLICACIÓN", "AUTOR_ID", "CATEGORÍA_ID"};
         DefaultTableModel modeloTablaLibros = new DefaultTableModel(columnasTablaLibros, 0);
         JTable tablaLibros = new JTable(modeloTablaLibros);
-
+        
+        // Llamamos al método para cargar los registros al iniciar el programa
         listaLibros = LibroDAO.listarLibros();
         cargarLibrosTabla(modeloTablaLibros, listaLibros);
-
+        
+        // Componentes de la interfaz
         JLabel tituloBienvenidaLibros = new JLabel("Libros");
         tituloBienvenidaLibros.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -54,7 +61,8 @@ public class GestionLibrosPanel extends JPanel {
         panelBotonesLibros.add(textoBuscarLibro);
 
         JScrollPane panelTablaLibros = new JScrollPane(tablaLibros);
-
+        panelTablaLibros.setPreferredSize(new Dimension(480, 300));
+        
         panelLibros.setLayout(new BoxLayout(panelLibros, BoxLayout.Y_AXIS));
         panelLibros.add(panelTituloBienvenidaLibros);
         panelLibros.add(Box.createVerticalStrut(20));
@@ -72,7 +80,8 @@ public class GestionLibrosPanel extends JPanel {
                 JDialog confirmacionAñadirLibros = new JDialog(parentWindow, "Añadir nuevo libro", Dialog.ModalityType.APPLICATION_MODAL);
                 confirmacionAñadirLibros.setSize(320, 450);
                 confirmacionAñadirLibros.setLayout(new BorderLayout());
-
+                
+                // Componentes ventana JDialog
                 JLabel labelIsbnLibro = new JLabel("Isbn:");
                 JTextField textoIsbnLibro = new JTextField(20);
                 textoIsbnLibro.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -90,7 +99,8 @@ public class GestionLibrosPanel extends JPanel {
                 comboBoxCategoriaIdLibro.setAlignmentX(Component.LEFT_ALIGNMENT);
                 JButton aceptarAñadirLibro = new JButton("Aceptar");
                 JButton cancelarAñadirLibro = new JButton("Cancelar");
-
+                
+                // Añadimos a los comboBox las opciones
                 for (Autor i : GestionAutoresPanel.getListaAutores()) {
                     comboBoxAutorIdLibro.addItem(i.getId());
                 }
@@ -158,6 +168,7 @@ public class GestionLibrosPanel extends JPanel {
                 aceptarAñadirLibro.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        // Comprobación campos vacios
                         boolean camposVacios = false;
                         if (textoIsbnLibro.getText().trim().isEmpty()) {
                             campoObligatorioIsbnLibro.setVisible(true);
@@ -172,7 +183,8 @@ public class GestionLibrosPanel extends JPanel {
                         } else {
                             campoObligatorioTituloLibro.setVisible(false);
                         }
-
+                        
+                        // Comprobación año de publicación es un número entero
                         Integer anioPublicacionLibro = null;
 
                         if (textoAnioPublicacionLibro.getText().trim().isEmpty()) {
@@ -193,6 +205,7 @@ public class GestionLibrosPanel extends JPanel {
                             String tituloLibro = textoTituloLibro.getText().trim();
                             Integer autorIdLibro = Integer.parseInt(comboBoxAutorIdLibro.getSelectedItem().toString());
                             Integer categoriaIdLibro = Integer.parseInt(comboBoxCategoriaIdLibro.getSelectedItem().toString());
+                            // Usamos el constructor definido en la clase Libro
                             Libro libro = new Libro(isbnLibro, tituloLibro, anioPublicacionLibro, autorIdLibro, categoriaIdLibro);
                             LibroDAO.insertarLibro(libro);
                             listaLibros = LibroDAO.listarLibros();
@@ -232,7 +245,8 @@ public class GestionLibrosPanel extends JPanel {
                 JDialog confirmacionEditarLibros = new JDialog(parentWindow, "Editar libro", Dialog.ModalityType.APPLICATION_MODAL);
                 confirmacionEditarLibros.setSize(320, 450);
                 confirmacionEditarLibros.setLayout(new BorderLayout());
-
+                
+                // Componentes ventana JDialog
                 JLabel labelIsbnLibro = new JLabel("Isbn:");
                 JTextField textoIsbnLibro = new JTextField(isbnActualLibro);
                 textoIsbnLibro.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -250,7 +264,8 @@ public class GestionLibrosPanel extends JPanel {
                 comboBoxCategoriaIdLibro.setAlignmentX(Component.LEFT_ALIGNMENT);
                 JButton aceptarEditarLibro = new JButton("Aceptar");
                 JButton cancelarEditarLibro = new JButton("Cancelar");
-
+                
+                // Añadimos a los comboBox las opciones
                 for (Autor i : GestionAutoresPanel.getListaAutores()) {
                     comboBoxAutorIdLibro.addItem(i.getId());
                 }
@@ -259,6 +274,9 @@ public class GestionLibrosPanel extends JPanel {
                     comboBoxCategoriaIdLibro.addItem(i.getId());
                 }
                 
+                // Establecer los valores seleccionados en los ComboBox
+                comboBoxAutorIdLibro.setSelectedItem(autorIdActualLibro);
+                comboBoxCategoriaIdLibro.setSelectedItem(categoriaIdActualLibro);
 
                 JLabel campoObligatorioIsbnLibro = new JLabel("Campo Obligatorio *");
                 campoObligatorioIsbnLibro.setForeground(Color.red);
@@ -319,6 +337,7 @@ public class GestionLibrosPanel extends JPanel {
                 aceptarEditarLibro.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        // Comprobación campos vacios
                         boolean camposVacios = false;
                         if (textoIsbnLibro.getText().trim().isEmpty()) {
                             campoObligatorioIsbnLibro.setVisible(true);
@@ -333,7 +352,8 @@ public class GestionLibrosPanel extends JPanel {
                         } else {
                             campoObligatorioTituloLibro.setVisible(false);
                         }
-
+                        
+                        // Comprobación año de publicación es un número entero
                         Integer anioPublicacionLibro = null;
 
                         if (textoAnioPublicacionLibro.getText().trim().isEmpty()) {
@@ -355,8 +375,9 @@ public class GestionLibrosPanel extends JPanel {
                             Integer anioPublicacionLibroNuevo = Integer.parseInt(textoAnioPublicacionLibro.getText().trim().toString());
                             Integer autorIdLibroNuevo = Integer.parseInt(comboBoxAutorIdLibro.getSelectedItem().toString());
                             Integer categoriaIdLibroNuevo = Integer.parseInt(comboBoxCategoriaIdLibro.getSelectedItem().toString());
+                            // Usamos el constructor definido en la clase Libro (con el isbn nuevo)
                             Libro libroActualizado = new Libro(isbnLibroNuevo, tituloLibroNuevo, anioPublicacionLibroNuevo, autorIdLibroNuevo, categoriaIdLibroNuevo);
-                            LibroDAO.actualizarLibro(libroActualizado, isbnActualLibro);
+                            LibroDAO.actualizarLibro(libroActualizado, isbnActualLibro); // (isbn viejo)
                             listaLibros = LibroDAO.listarLibros();
                             cargarLibrosTabla(modeloTablaLibros, listaLibros);
                             confirmacionEditarLibros.dispose();
@@ -391,7 +412,8 @@ public class GestionLibrosPanel extends JPanel {
                 JDialog confirmacionBorrarLibros = new JDialog(parentWindow, "Borrar libro", Dialog.ModalityType.APPLICATION_MODAL);
                 confirmacionBorrarLibros.setSize(320, 180);
                 confirmacionBorrarLibros.setLayout(new BorderLayout());
-
+                
+                // Componentes de la ventana JDialog
                 JLabel mensajeConfirmacionLibroBorrado = new JLabel("¿Estas seguro/a que quieres eliminar este libro?");
                 mensajeConfirmacionLibroBorrado.setAlignmentX(CENTER_ALIGNMENT);
                 JButton aceptarConfirmacionLibroBorrado = new JButton("Aceptar");
@@ -414,7 +436,7 @@ public class GestionLibrosPanel extends JPanel {
                 aceptarConfirmacionLibroBorrado.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        LibroDAO.borrarLibro(isbnLibro);
+                        LibroDAO.borrarLibro(isbnLibro); // Pasamos el isbn del libro a borrar
                         listaLibros = LibroDAO.listarLibros();
                         cargarLibrosTabla(modeloTablaLibros, listaLibros);
                         confirmacionBorrarLibros.dispose();
@@ -436,6 +458,7 @@ public class GestionLibrosPanel extends JPanel {
         botonBuscarLibro.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Comprobación búsqueda vacía
                 if (textoBuscarLibro.getText().trim().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Por favor introduzca un valor "
                             + "en la búsqueda");
@@ -443,7 +466,8 @@ public class GestionLibrosPanel extends JPanel {
                 }
                 String isbnBuscarLibro = textoBuscarLibro.getText();
                 Libro libroBuscado = LibroDAO.buscarLibro(isbnBuscarLibro);
-
+                
+                // Comprobación de resultados
                 if (libroBuscado != null) {
                     ArrayList<Libro> listaLibrosBuscados = new ArrayList<>();
                     listaLibrosBuscados.add(libroBuscado);
@@ -460,13 +484,15 @@ public class GestionLibrosPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 listaLibros = LibroDAO.listarLibros();
+                // Se actualizan los registros
                 cargarLibrosTabla(modeloTablaLibros, listaLibros);
-                textoBuscarLibro.setText("");
+                textoBuscarLibro.setText(""); // Se limpia el parámetro de búsqueda
                 botonVolverAtras.setVisible(false);
             }
         });
     }
-
+    
+    // Método para actualizar la tabla en cada operación
     public void cargarLibrosTabla(DefaultTableModel modeloTabla, ArrayList<Libro> listaLibros) {
         modeloTabla.setRowCount(0);;
         for (Libro i : listaLibros) {

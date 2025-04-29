@@ -1,4 +1,5 @@
 package es.daw.carlos.biblioteca.vista;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -21,7 +22,7 @@ public class BibliotecaApp extends JFrame {
         menuBibliotecaApp.addTab("Categorías", new GestionCategoriasPanel());
         menuBibliotecaApp.addTab("Libros", new GestionLibrosPanel());
         
-        add(menuBibliotecaApp);
+        add(menuBibliotecaApp); // Añadimos el panel al frame
         setVisible(true);
     }
 }

@@ -2,6 +2,7 @@ package es.daw.carlos.biblioteca.vista;
 
 import es.daw.carlos.biblioteca.dao.CategoriaDAO;
 import es.daw.carlos.biblioteca.model.Categoria;
+import es.daw.carlos.biblioteca.model.Libro;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -14,6 +15,7 @@ public class GestionCategoriasPanel extends JPanel {
     private JPanel panelCategorias = new JPanel();
     private static ArrayList<Categoria> listaCategorias;
     
+    // Método para utilizar la listaCategorias fuera de la clase
     public static ArrayList<Categoria> getListaCategorias() {
         return listaCategorias;
     }
@@ -27,10 +29,12 @@ public class GestionCategoriasPanel extends JPanel {
         DefaultTableModel modeloTablaCategorias = new DefaultTableModel(columnasTablaCategorias, 0);
         JTable tablaCategorias = new JTable(modeloTablaCategorias);
         
+        // Llamamos al método para cargar los registros al iniciar el programa
         listaCategorias = CategoriaDAO.listarCategorias();
         cargarCategoriasTabla(modeloTablaCategorias, listaCategorias);
         
-        JLabel tituloBienvenidaCategorias = new JLabel("Categorias");
+        // Componentes de la interfaz
+        JLabel tituloBienvenidaCategorias = new JLabel("Categorías");
         tituloBienvenidaCategorias.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         JButton botonAñadirCategoria = new JButton("Añadir");
@@ -56,6 +60,7 @@ public class GestionCategoriasPanel extends JPanel {
         panelBotonesCategorias.add(textoBuscarCategoria);
         
         JScrollPane panelTablaCategorias = new JScrollPane(tablaCategorias);
+        panelTablaCategorias.setPreferredSize(new Dimension(480, 300));
         
         panelCategorias.setLayout(new BoxLayout(panelCategorias, BoxLayout.Y_AXIS));
         panelCategorias.add(panelTituloBienvenidaCategorias);
@@ -74,9 +79,11 @@ public class GestionCategoriasPanel extends JPanel {
                 JDialog confirmacionAñadirCategorias = new JDialog(parentWindow, "Añadir nueva categoría", Dialog.ModalityType.APPLICATION_MODAL);
                 confirmacionAñadirCategorias.setSize(300, 180);
                 confirmacionAñadirCategorias.setLayout(new BorderLayout());
-
+                
+                // Componentes ventana JDialog
                 JLabel labelNombreCategoria = new JLabel("Nombre:");
                 JTextField textoNombreCategoria = new JTextField(20);
+                textoNombreCategoria.setAlignmentX(Component.LEFT_ALIGNMENT);
                 JButton aceptarAñadirCategoria = new JButton("Aceptar");
                 JButton cancelarAñadirCategoria = new JButton("Cancelar");
 
@@ -105,10 +112,12 @@ public class GestionCategoriasPanel extends JPanel {
                 aceptarAñadirCategoria.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        // Comprobación campo vacio
                         if (textoNombreCategoria.getText().trim().isEmpty()) {
                             campoObligatorioNombreCategoria.setVisible(true);
                         } else {
                             String nombreCategoria = textoNombreCategoria.getText().trim();
+                            // Usamos constructor personalizado (sin id)
                             Categoria categoria = new Categoria(nombreCategoria);
                             CategoriaDAO.insertarCategoria(categoria);
                             listaCategorias = CategoriaDAO.listarCategorias();
@@ -145,9 +154,11 @@ public class GestionCategoriasPanel extends JPanel {
                 JDialog confirmacionEditarCategorias = new JDialog(parentWindow, "Editar categoría", Dialog.ModalityType.APPLICATION_MODAL);
                 confirmacionEditarCategorias.setSize(300, 180);
                 confirmacionEditarCategorias.setLayout(new BorderLayout());
-
+                
+                // Componentes ventana JDialog
                 JLabel labelNombreCategoria = new JLabel("Nombre:");
                 JTextField textoNombreCategoria = new JTextField(nombreCategoriaActual, 20);
+                textoNombreCategoria.setAlignmentX(Component.LEFT_ALIGNMENT);
                 JButton aceptarEditarCategoria = new JButton("Aceptar");
                 JButton cancelarEditarCategoria = new JButton("Cancelar");
 
@@ -176,10 +187,12 @@ public class GestionCategoriasPanel extends JPanel {
                 aceptarEditarCategoria.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        // Comprobación campo vacio
                         if (textoNombreCategoria.getText().trim().isEmpty()) {
                             campoObligatorioNombreCategoria.setVisible(true);
                         } else {
                             String nombreCategoriaNueva = textoNombreCategoria.getText().trim();
+                            // Usamos el constructor con id
                             Categoria categoriaActualizada = new Categoria(idCategoria, nombreCategoriaNueva);
                             CategoriaDAO.actualizarCategoria(categoriaActualizada);
                             listaCategorias = CategoriaDAO.listarCategorias();
@@ -216,7 +229,8 @@ public class GestionCategoriasPanel extends JPanel {
                 JDialog confirmacionBorrarCategorias = new JDialog(parentWindow, "Borrar categoría", Dialog.ModalityType.APPLICATION_MODAL);
                 confirmacionBorrarCategorias.setSize(320, 180);
                 confirmacionBorrarCategorias.setLayout(new BorderLayout());
-
+                
+                // Componentes ventana JDialog
                 JLabel mensajeConfirmacionCategoriaBorrada = new JLabel("¿Estas seguro/a que quieres eliminar esta categoría");
                 mensajeConfirmacionCategoriaBorrada.setAlignmentX(CENTER_ALIGNMENT);
                 JButton aceptarConfirmacionCategoriaBorrada = new JButton("Aceptar");
@@ -239,10 +253,23 @@ public class GestionCategoriasPanel extends JPanel {
                 aceptarConfirmacionCategoriaBorrada.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        CategoriaDAO.borrarCategoria(idCategoria);
-                        listaCategorias = CategoriaDAO.listarCategorias();
-                        cargarCategoriasTabla(modeloTablaCategorias, listaCategorias);
-                        confirmacionBorrarCategorias.dispose();
+                        // Comprobación si la categoría tiene asociado un libro
+                        boolean categoriaExisteEnLibro = false;
+                        for (Libro i : GestionLibrosPanel.getListaLibros()) {
+                            if ((idCategoria == i.getCategoria_id())) {
+                                categoriaExisteEnLibro = true;
+                            }
+                        }
+                        if (categoriaExisteEnLibro) {
+                            JOptionPane.showMessageDialog(null, "La categoría que quieres borrar "
+                                        + "es una categoría de un libro existente");
+                        } else {
+                            // Pasamos el id de la categoría a borrar
+                            CategoriaDAO.borrarCategoria(idCategoria);
+                            listaCategorias= CategoriaDAO.listarCategorias();
+                            cargarCategoriasTabla(modeloTablaCategorias, listaCategorias);
+                            confirmacionBorrarCategorias.dispose();
+                        }
                     }
                 });
 
@@ -261,15 +288,18 @@ public class GestionCategoriasPanel extends JPanel {
         botonBuscarCategoria.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Comprobación búsqueda vacia
                 if (textoBuscarCategoria.getText().trim().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Por favor introduzca un valor "
                             + "en la búsqueda");
                     return;
                 }
                 try {
+                    // Comprobación búsqueda con un número entero
                     int idBuscarCategoria = Integer.parseInt(textoBuscarCategoria.getText());
                     Categoria categoriaBuscada = CategoriaDAO.buscarCategoria(idBuscarCategoria);
-
+                    
+                    // Comprobación de resultados
                     if (categoriaBuscada != null) {
                         ArrayList<Categoria> listaCategoriasBuscados = new ArrayList<>();
                         listaCategoriasBuscados.add(categoriaBuscada);
@@ -289,13 +319,15 @@ public class GestionCategoriasPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 listaCategorias = CategoriaDAO.listarCategorias();
+                // Se actualizan los registros
                 cargarCategoriasTabla(modeloTablaCategorias, listaCategorias);
-                textoBuscarCategoria.setText("");
+                textoBuscarCategoria.setText(""); // Se limpia el parámetro de búsqueda
                 botonVolverAtras.setVisible(false);
             }
         });
     }
     
+    // Método para actualizar la tabla en cada operación
     public void cargarCategoriasTabla(DefaultTableModel modeloTabla, ArrayList<Categoria> listaCategorias) {
         modeloTabla.setRowCount(0);
         for (Categoria i : listaCategorias) {
