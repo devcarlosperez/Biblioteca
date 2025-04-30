@@ -7,8 +7,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 // Librerías de los diferentes temas de Java Swing
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import com.jtattoo.plaf.aluminium.AluminiumLookAndFeel;
 import com.jtattoo.plaf.luna.LunaLookAndFeel;
+import com.jtattoo.plaf.aero.AeroLookAndFeel;
+import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
 
 public class Biblioteca {
     
@@ -21,8 +22,9 @@ public class Biblioteca {
         }
         // Elige el tema a utilizar
         UIManager.setLookAndFeel(new NimbusLookAndFeel());
-        // UIManager.setLookAndFeel(new AluminiumLookAndFeel());
+        // UIManager.setLookAndFeel(new AeroLookAndFeel());
         // UIManager.setLookAndFeel(new LunaLookAndFeel());
+        // UIManager.setLookAndFeel(new AcrylLookAndFeel());
         new BibliotecaApp();
     }
 }
